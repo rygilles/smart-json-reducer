@@ -1,0 +1,35 @@
+{
+    "name": "rygilles/smart-json-reducer",
+    "description": "Helper to reduce JSON objects size applying truncates on string fields using weights",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "http://github.com/rygilles/smart-json-reducer",
+    "authors": [
+        {
+            "name": "Ryan Gilles",
+            "email": "ryan@e-monsite.com"
+        }
+    ],
+    "require": {
+        "php": "^5.5"
+    },
+    "autoload": {
+        "psr-0": {
+            "Rygilles\\SmartJsonReducer": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "fzaninotto/faker": "^1.8"
+    },
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix . --dry-run",
+        "cs-fix-dry": "php-cs-fixer fix . --dry-run",
+        "test": "phpunit"
+    }
+}
