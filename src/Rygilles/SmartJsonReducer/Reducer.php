@@ -29,7 +29,7 @@ class Reducer
 			throw new \RuntimeException('$weights must be an array');
 		}
 		
-		$realWeights = static::computeRealWeights($weights);
+		$realWeights = static::getRealWeights($weights);
 		
 		$jsonStringSize = mb_strlen($json, '8bit');
 		
@@ -102,12 +102,12 @@ class Reducer
 	/**
 	 * Compute the real weights, normalizing them.
 	 *
-	 * @param array $weights Keys must be the "dotted" path of fields and values the weight
+	 * @param array &$weights Keys must be the "dotted" path of fields and values the weight
 	 * @return array
 	 */
-	protected static function computeRealWeights($weights)
+	protected static function getRealWeights(&$weights)
 	{
-		$totalWeight = static::computeTotalWeight($weights);
+		$totalWeight = static::getTotalWeight($weights);
 		$realWeights = [];
 		
 		foreach ($weights as $path => $weight) {
@@ -120,10 +120,10 @@ class Reducer
 	/**
 	 * Compute the total fields weight.
 	 *
-	 * @param array $weights Keys must be the "dotted" path of fields and values the weight
+	 * @param array &$weights Keys must be the "dotted" path of fields and values the weight
 	 * @return float
 	 */
-	protected static function computeTotalWeight($weights)
+	protected static function getTotalWeight(&$weights)
 	{
 		$totalWeight = 0;
 		
