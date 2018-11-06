@@ -33,12 +33,12 @@ class Reducer
 		
 		$jsonStringSize = mb_strlen($json, '8bit');
 		
-		$jsonStructureSize = $jsonStringSize - static::computeJsonDataSize($jsonArray, $weights);
+		$jsonStructureSize = $jsonStringSize - static::getJsonDataSize($jsonArray, $weights);
 		
 		$resultDataSize = $maxSize - $jsonStructureSize;
 
 		foreach ($realWeights as $path => $realWeight) {
-			$jsonArray = static::reduceJsonArrayField($jsonArray, $path, $resultDataSize, $realWeight, $encoding);
+			static::reduceJsonArrayField($jsonArray, $path, $resultDataSize, $realWeight, $encoding);
 		}
 		
 		$json = \json_encode($jsonArray);
@@ -82,13 +82,13 @@ class Reducer
 	}
 	
 	/**
-	 * Compute the JSON array data size in bytes.
+	 * Get the JSON array data size in bytes.
 	 *
-	 * @param array $jsonArray JSON array
+	 * @param array &$jsonArray JSON array
 	 * @param array $weights Keys must be the "dotted" path of fields and values the weight
 	 * @return int
 	 */
-	protected static function computeJsonDataSize($jsonArray, $weights)
+	protected static function getJsonDataSize(&$jsonArray, $weights)
 	{
 		$dataTotalSize = 0;
 		
@@ -138,14 +138,14 @@ class Reducer
 	/**
 	 * Apply reduction on JSON array field using the path, difference size and weight.
 	 *
-	 * @param array $jsonArray JSON array
+	 * @param array &$jsonArray JSON array
 	 * @param string $path Field "dotted" path
 	 * @param int $resultDataSize result JSON string size in bytes
 	 * @param float $weight Field weight
 	 * @param string $encoding Encoding format to use
-	 * @return array
+	 * @return void
 	 */
-	protected static function reduceJsonArrayField($jsonArray, $path, $resultDataSize, $weight, $encoding = null)
+	protected static function reduceJsonArrayField(&$jsonArray, $path, $resultDataSize, $weight, $encoding = null)
 	{
 		if (is_null($encoding)) {
 			$encoding = mb_internal_encoding();
@@ -157,8 +157,7 @@ class Reducer
 		
 		$value = Arr::get($jsonArray, $path);
 		
-		$originalStringLength = mb_strlen($value, '8bit');
-		$stringLength = max(0, min($originalStringLength, floor($resultDataSize * $weight)));
+		$stringLength = static::getJsonArrayFieldWeightAppliedLength($jsonArray, $path, $resultDataSize, $weight);
 		
 		Arr::set(
 			$jsonArray,
@@ -170,7 +169,43 @@ class Reducer
 				$encoding
 			)
 		);
+	}
 	
-		return $jsonArray;
+	/**
+	 * Get the field value length.
+	 *
+	 * @param array &$jsonArray JSON array
+	 * @param string $path Field "dotted" path
+	 * @return int
+	 */
+	protected static function getJsonArrayFieldLength(&$jsonArray, $path)
+	{
+		if (!Arr::has($jsonArray, $path)) {
+			throw new \RuntimeException('"' . $path . '" path not found');
+		}
+		
+		$value = Arr::get($jsonArray, $path);
+		
+		return mb_strlen($value, '8bit');
+	}
+	
+	/**
+	 * Get the new field value length if weight was applied.
+	 *
+	 * @param array &$jsonArray
+	 * @param string $path Field "dotted" path
+	 * @param int $resultDataSize result JSON string size in bytes
+	 * @param float $weight Field weight
+	 * @return int
+	 */
+	protected static function getJsonArrayFieldWeightAppliedLength(&$jsonArray, $path, $resultDataSize, $weight)
+	{
+		return max(
+			0,
+			min(
+				static::getJsonArrayFieldLength($jsonArray, $path),
+				floor($resultDataSize * $weight)
+			)
+		);
 	}
 }
