@@ -2,7 +2,7 @@
 
 [![StyleCI](https://github.styleci.io/repos/155188505/shield?style=flat)](https://github.styleci.io/repos/155188505/shield?style=flat)
 [![Build Status](https://travis-ci.org/rygilles/smart-json-reducer.svg?branch=master)](https://travis-ci.org/rygilles/smart-json-reducer)
-![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)
+![GitHub](https://img.shields.io/github/license/rygilles/smart-json-reducer.svg)
 
 Helper to reduce JSON objects size applying truncates on string fields using weights.
 
