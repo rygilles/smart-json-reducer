@@ -28,7 +28,7 @@
         "fzaninotto/faker": "^1.8"
     },
     "scripts": {
-        "cs-fix": "php-cs-fixer fix . --dry-run",
+        "cs-fix": "php-cs-fixer fix .",
         "cs-fix-dry": "php-cs-fixer fix . --dry-run",
         "test": "phpunit"
     }
